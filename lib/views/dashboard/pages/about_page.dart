@@ -140,9 +140,9 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
       return height;
     }
     var containerHeight = height * ((offset - 40 - start) / (stop - start));
-    if (containerHeight >= 250) {
+    if (containerHeight >= 200) {
       _animationControllerAboutMeValue.forward();
-    } else if (containerHeight < 100) {
+    } else if (containerHeight < 200) {
       _animationControllerAboutMeValue.reverse();
     }
     return containerHeight;
@@ -230,30 +230,39 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                   AnimatedBuilder(
                     animation: widget._controller,
                     builder: (context, _) {
-                      return AnimatedContainer(
-                        height: setContainerHeight,
-                        curve: Curves.ease,
-                        padding: const EdgeInsets.only(left: 10),
-                        duration: Duration.zero,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            left: BorderSide(
-                              color: _theme.colorScheme.primary,
-                              width: 3,
+                      return AnimatedBuilder(
+                        animation: _animationControllerAboutMeLabel,
+                        builder: (context, _) {
+                          return AnimatedOpacity(
+                            opacity: _opacityAnimation.value,
+                            duration: _duration,
+                            child: AnimatedContainer(
+                              height: setContainerHeight,
+                              curve: Curves.ease,
+                              padding: const EdgeInsets.only(left: 10),
+                              duration: Duration.zero,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(
+                                    color: _theme.colorScheme.primary,
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              child: AnimatedOpacity(
+                                opacity: _opacityAnimationValue.value,
+                                duration: _duration,
+                                child: Text(
+                                  "My name is Tushandeep Singh and I'm $age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        child: AnimatedOpacity(
-                          opacity: _opacityAnimationValue.value,
-                          duration: _duration,
-                          child: Text(
-                            "My name is Tushandeep Singh and I'm $age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
-                            style: const TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                          );
+                        },
                       );
                     },
                   ),
