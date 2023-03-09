@@ -18,19 +18,23 @@ class AboutPage extends StatefulWidget {
   State<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutPageState extends State<AboutPage>
-    with SingleTickerProviderStateMixin {
+class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
   late Size _size;
   late ThemeData _theme;
 
   late DashBoardController _dashBoardController;
-  late AnimationController _animationController;
+  late AnimationController _animationControllerAboutMeLabel;
+  late AnimationController _animationControllerAboutMeValue;
 
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
 
+  late Animation<double> _opacityAnimationValue;
+
   late int age;
   late double maxWidth, start, stop, height = 311;
+
+  bool animating = true;
 
   double get offset =>
       widget._controller.hasClients ? widget._controller.offset : 0;
@@ -41,7 +45,14 @@ class _AboutPageState extends State<AboutPage>
 
     _dashBoardController = Get.find<DashBoardController>();
 
-    _animationController = AnimationController(
+    maxWidth = _dashBoardController.maxScreenWidth.value;
+
+    _animationControllerAboutMeLabel = AnimationController(
+      vsync: this,
+      duration: _duration,
+    );
+
+    _animationControllerAboutMeValue = AnimationController(
       vsync: this,
       duration: _duration,
     );
@@ -51,7 +62,7 @@ class _AboutPageState extends State<AboutPage>
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _animationControllerAboutMeLabel,
         curve: Curves.ease,
       ),
     );
@@ -61,7 +72,17 @@ class _AboutPageState extends State<AboutPage>
       end: 1,
     ).animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _animationControllerAboutMeLabel,
+        curve: Curves.ease,
+      ),
+    );
+
+    _opacityAnimationValue = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationControllerAboutMeValue,
         curve: Curves.ease,
       ),
     );
@@ -83,9 +104,13 @@ class _AboutPageState extends State<AboutPage>
     stop = _dashBoardController.maxScreenWidth.value *
         (_dashBoardController.factor.value + 1);
 
-    widget._controller.addListener(() {
-      if (offset == maxWidth - 100) {
-        _animationController.forward();
+    _dashBoardController.currPosOffset.listen((val) {
+      if (val >= maxWidth - 200 && animating) {
+        _animationControllerAboutMeLabel.forward();
+        animating = false;
+      } else if (val < maxWidth) {
+        _animationControllerAboutMeLabel.reverse();
+        animating = true;
       }
     });
   }
@@ -109,12 +134,18 @@ class _AboutPageState extends State<AboutPage>
   }
 
   double get setContainerHeight {
-    if (offset < start) {
+    if (offset - 40 < start) {
       return 0;
-    } else if (offset > stop) {
+    } else if (offset - 40 > stop) {
       return height;
     }
-    return height * ((offset - start) / (stop - start));
+    var containerHeight = height * ((offset - 40 - start) / (stop - start));
+    if (containerHeight >= 250) {
+      _animationControllerAboutMeValue.forward();
+    } else if (containerHeight < 100) {
+      _animationControllerAboutMeValue.reverse();
+    }
+    return containerHeight;
   }
 
   @override
@@ -176,7 +207,7 @@ class _AboutPageState extends State<AboutPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   AnimatedBuilder(
-                    animation: _animationController,
+                    animation: _animationControllerAboutMeLabel,
                     builder: (context, _) {
                       return AnimatedOpacity(
                         opacity: _opacityAnimation.value,
@@ -205,7 +236,6 @@ class _AboutPageState extends State<AboutPage>
                         padding: const EdgeInsets.only(left: 10),
                         duration: Duration.zero,
                         decoration: BoxDecoration(
-                          color: Colors.red,
                           border: Border(
                             left: BorderSide(
                               color: _theme.colorScheme.primary,
@@ -213,11 +243,15 @@ class _AboutPageState extends State<AboutPage>
                             ),
                           ),
                         ),
-                        child: Text(
-                          "My name is Tushandeep Singh and I'm $age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
+                        child: AnimatedOpacity(
+                          opacity: _opacityAnimationValue.value,
+                          duration: _duration,
+                          child: Text(
+                            "My name is Tushandeep Singh and I'm $age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       );
