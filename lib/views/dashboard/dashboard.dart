@@ -28,13 +28,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     super.initState();
 
     _controller = Get.find<DashBoardController>()
-      ..maxScreenWidth(widget.size.height - kAppHeight);
+      ..maxScreenHeight(widget.size.height - kAppHeight);
 
     _controller.factor.listen(
       (f) async {
         _controller.isScrolling(false);
         _controller.currPosOffset(
-          _controller.maxScreenWidth * _controller.factor.value,
+          _controller.maxScreenHeight * _controller.factor.value,
         );
 
         _scrollController.animateTo(
@@ -54,24 +54,24 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         () {
           _controller.currPosOffset(_scrollController.offset);
           if (_controller.isScrolling.value) {
-            final double width = _controller.maxScreenWidth.value;
+            final double height = _controller.maxScreenHeight.value;
             final double currPos = _controller.currPosOffset.value;
 
-            if (currPos >= 0 && currPos < width) {
+            if (currPos >= 0 && currPos < height) {
               _controller.factor(0);
-              _controller.currPosOffset(0 * width);
-            } else if (currPos >= width && currPos < width * 2) {
+              _controller.currPosOffset(0 * height);
+            } else if (currPos >= height && currPos < height * 2) {
               _controller.factor(1);
-              _controller.currPosOffset(1 * width);
-            } else if (currPos >= width * 2 && currPos < width * 3) {
+              _controller.currPosOffset(1 * height);
+            } else if (currPos >= height * 2 && currPos < height * 3) {
               _controller.factor(2);
-              _controller.currPosOffset(2 * width);
-            } else if (currPos >= width * 3 && currPos < width * 4) {
+              _controller.currPosOffset(2 * height);
+            } else if (currPos >= height * 3 && currPos < height * 4) {
               _controller.factor(3);
-              _controller.currPosOffset(3 * width);
-            } else if (currPos >= width * 4 && currPos < width * 5) {
+              _controller.currPosOffset(3 * height);
+            } else if (currPos >= height * 4 && currPos < height * 5) {
               _controller.factor(4);
-              _controller.currPosOffset(4 * width);
+              _controller.currPosOffset(4 * height);
             }
           }
         },
@@ -103,7 +103,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     children: [
                       HomePage(controller: _scrollController),
                       AboutPage(controller: _scrollController),
-                      const SkillsPage(),
+                      SkillsPage(controller: _scrollController),
                       const ExperiencePage(),
                       const ContactPage(),
                     ],
@@ -219,7 +219,8 @@ class _AppBar extends StatelessWidget {
         onTap: () {
           _controller.factor(item.value);
           _controller.currPosOffset(
-              _controller.maxScreenWidth.value * _controller.factor.value);
+            _controller.maxScreenHeight.value * _controller.factor.value,
+          );
           item.onPress;
         },
         child: MouseRegion(

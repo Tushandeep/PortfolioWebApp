@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage>
 
     _dashBoardController = Get.find<DashBoardController>();
 
-    start = _dashBoardController.maxScreenWidth.value *
+    start = _dashBoardController.maxScreenHeight.value *
         _dashBoardController.factor.value;
 
-    stop = _dashBoardController.maxScreenWidth.value *
+    stop = _dashBoardController.maxScreenHeight.value *
         (_dashBoardController.factor.value + 1);
 
     _animationController = AnimationController(

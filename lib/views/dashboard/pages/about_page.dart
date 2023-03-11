@@ -31,12 +31,13 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
   late Animation<double> _opacityAnimationValue;
 
-  late int age;
-  late double maxWidth, start, stop, height = 311;
+  late int _age;
+  late double _maxHeight, _start, _stop;
+  final double _height = 311;
 
-  bool animating = true;
+  final bool _animating = true;
 
-  double get offset =>
+  double get _offset =>
       widget._controller.hasClients ? widget._controller.offset : 0;
 
   @override
@@ -45,7 +46,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
     _dashBoardController = Get.find<DashBoardController>();
 
-    maxWidth = _dashBoardController.maxScreenWidth.value;
+    _maxHeight = _dashBoardController.maxScreenHeight.value;
 
     _animationControllerAboutMeLabel = AnimationController(
       vsync: this,
@@ -90,56 +91,56 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     final int year = DateTime.now().year - 2001;
     if (DateTime.now().month <= 10) {
       if (DateTime.now().day < 8) {
-        age = year - 1;
+        _age = year - 1;
       } else {
-        age = year;
+        _age = year;
       }
     } else {
-      age = year;
+      _age = year;
     }
 
-    start = _dashBoardController.maxScreenWidth.value *
-        _dashBoardController.factor.value;
+    _start = _maxHeight * _dashBoardController.factor.value;
 
-    stop = _dashBoardController.maxScreenWidth.value *
-        (_dashBoardController.factor.value + 1);
+    _stop = _maxHeight * (_dashBoardController.factor.value + 1);
 
     _dashBoardController.currPosOffset.listen((val) {
-      if (val >= maxWidth - 200 && animating) {
+      if (val >= _maxHeight - 200) {
         _animationControllerAboutMeLabel.forward();
-        animating = false;
-      } else if (val < maxWidth) {
-        _animationControllerAboutMeLabel.reverse();
-        animating = true;
+        // _animating = false;
       }
+      // else if (val < _maxHeight) {
+      //   _animationControllerAboutMeLabel.reverse();
+      //   _animating = true;
+      // }
     });
   }
 
   double get setOpacity {
-    if (offset < start) {
+    if (_offset < _start) {
       return 0;
-    } else if (offset > stop) {
+    } else if (_offset > _stop) {
       return 1;
     }
-    return (offset - start) / (stop - start);
+    return (_offset - _start) / (_stop - _start);
   }
 
   double get setOffset {
-    if (offset < start) {
+    if (_offset < _start) {
       return -1;
-    } else if (offset > stop) {
+    } else if (_offset > _stop) {
       return 0;
     }
-    return -1.0 + ((offset - start) / (stop - start));
+    return -1.0 + ((_offset - _start) / (_stop - _start));
   }
 
   double get setContainerHeight {
-    if (offset - 40 < start) {
+    if (_offset - 40 < _start) {
       return 0;
-    } else if (offset - 40 > stop) {
-      return height;
+    } else if (_offset - 40 > _stop) {
+      return _height;
     }
-    var containerHeight = height * ((offset - 40 - start) / (stop - start));
+    var containerHeight =
+        _height * ((_offset - 40 - _start) / (_stop - _start));
     if (containerHeight >= 200) {
       _animationControllerAboutMeValue.forward();
     } else if (containerHeight < 200) {
@@ -253,7 +254,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                                 opacity: _opacityAnimationValue.value,
                                 duration: _duration,
                                 child: Text(
-                                  "My name is Tushandeep Singh and I'm $age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
+                                  "My name is Tushandeep Singh and I'm $_age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
                                   style: const TextStyle(
                                     fontSize: 24,
                                     color: Colors.white,
