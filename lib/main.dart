@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import './constants/theme.dart';
 import './views/dashboard/dashboard.dart';
-
 import './controllers/dashboard_controller.dart';
 
 void main() {
@@ -44,7 +43,12 @@ class _MyAppState extends State<MyApp> {
       title: 'Tushandeep Singh',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      home: DashBoardScreen(size: _size),
+      home: Stack(
+        alignment: Alignment.center,
+        children: [
+          DashBoardScreen(size: _size),
+        ],
+      ),
     );
   }
 }

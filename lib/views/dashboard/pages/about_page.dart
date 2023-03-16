@@ -23,19 +23,16 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
   late ThemeData _theme;
 
   late DashBoardController _dashBoardController;
-  late AnimationController _animationControllerAboutMeLabel;
-  late AnimationController _animationControllerAboutMeValue;
+  late AnimationController _animationController;
 
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
-
-  late Animation<double> _opacityAnimationValue;
 
   late int _age;
   late double _maxHeight, _start, _stop;
   final double _height = 311;
 
-  final bool _animating = true;
+  bool _animating = true;
 
   double get _offset =>
       widget._controller.hasClients ? widget._controller.offset : 0;
@@ -48,12 +45,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
     _maxHeight = _dashBoardController.maxScreenHeight.value;
 
-    _animationControllerAboutMeLabel = AnimationController(
-      vsync: this,
-      duration: _duration,
-    );
-
-    _animationControllerAboutMeValue = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: _duration,
     );
@@ -63,7 +55,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
-        parent: _animationControllerAboutMeLabel,
+        parent: _animationController,
         curve: Curves.ease,
       ),
     );
@@ -73,17 +65,7 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
       end: 1,
     ).animate(
       CurvedAnimation(
-        parent: _animationControllerAboutMeLabel,
-        curve: Curves.ease,
-      ),
-    );
-
-    _opacityAnimationValue = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationControllerAboutMeValue,
+        parent: _animationController,
         curve: Curves.ease,
       ),
     );
@@ -104,9 +86,11 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     _stop = _maxHeight * (_dashBoardController.factor.value + 1);
 
     _dashBoardController.currPosOffset.listen((val) {
-      if (val >= _maxHeight - 200) {
-        _animationControllerAboutMeLabel.forward();
-        // _animating = false;
+      if (val >= (_maxHeight - 200) &&
+          !_animationController.isAnimating &&
+          _animating) {
+        _animationController.forward();
+        _animating = false;
       }
       // else if (val < _maxHeight) {
       //   _animationControllerAboutMeLabel.reverse();
@@ -133,21 +117,21 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     return -1.0 + ((_offset - _start) / (_stop - _start));
   }
 
-  double get setContainerHeight {
-    if (_offset - 40 < _start) {
-      return 0;
-    } else if (_offset - 40 > _stop) {
-      return _height;
-    }
-    var containerHeight =
-        _height * ((_offset - 40 - _start) / (_stop - _start));
-    if (containerHeight >= 200) {
-      _animationControllerAboutMeValue.forward();
-    } else if (containerHeight < 200) {
-      _animationControllerAboutMeValue.reverse();
-    }
-    return containerHeight;
-  }
+  // double get setContainerHeight {
+  //   if (_offset - 40 < _start) {
+  //     return 0;
+  //   } else if (_offset - 40 > _stop) {
+  //     return _height;
+  //   }
+  //   var containerHeight =
+  //       _height * ((_offset - 40 - _start) / (_stop - _start));
+  //   if (containerHeight >= 200) {
+  //     _animationControllerAboutMeValue.forward();
+  //   } else if (containerHeight < 200) {
+  //     _animationControllerAboutMeValue.reverse();
+  //   }
+  //   return containerHeight;
+  // }
 
   @override
   void didChangeDependencies() {
@@ -158,41 +142,46 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: _size.height - kAppHeight,
+      width: double.maxFinite,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                AnimatedBuilder(
-                  animation: widget._controller,
-                  builder: (context, _) {
-                    return AnimatedOpacity(
-                      opacity: setOpacity,
-                      duration: _duration,
-                      child: Transform.scale(
-                        scale: setOpacity,
-                        child: Container(
-                          height: 500,
-                          width: 500,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(400),
-                            child: Image.asset(
-                              "assets/images/my_image.png",
-                              fit: BoxFit.cover,
-                              height: 460,
-                              width: 460,
+                FittedBox(
+                  fit: BoxFit.cover,
+                  child: AnimatedBuilder(
+                    animation: widget._controller,
+                    builder: (context, _) {
+                      return AnimatedOpacity(
+                        opacity: setOpacity,
+                        duration: _duration,
+                        child: Transform.scale(
+                          scale: setOpacity,
+                          child: Container(
+                            height: 500,
+                            width: 500,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(400),
+                              child: Image.asset(
+                                "assets/images/my_image.png",
+                                fit: BoxFit.cover,
+                                height: 460,
+                                width: 460,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -200,15 +189,15 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(
-                left: 20.0,
-                right: 120,
+                left: 20,
+                right: 50,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   AnimatedBuilder(
-                    animation: _animationControllerAboutMeLabel,
+                    animation: _animationController,
                     builder: (context, _) {
                       return AnimatedOpacity(
                         opacity: _opacityAnimation.value,
@@ -232,16 +221,17 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                     animation: widget._controller,
                     builder: (context, _) {
                       return AnimatedBuilder(
-                        animation: _animationControllerAboutMeLabel,
+                        animation: _animationController,
                         builder: (context, _) {
                           return AnimatedOpacity(
                             opacity: _opacityAnimation.value,
                             duration: _duration,
-                            child: AnimatedContainer(
-                              height: setContainerHeight,
-                              curve: Curves.ease,
-                              padding: const EdgeInsets.only(left: 10),
-                              duration: Duration.zero,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                top: 10,
+                                bottom: 10,
+                              ),
                               decoration: BoxDecoration(
                                 border: Border(
                                   left: BorderSide(
@@ -251,12 +241,12 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
                                 ),
                               ),
                               child: AnimatedOpacity(
-                                opacity: _opacityAnimationValue.value,
+                                opacity: _opacityAnimation.value,
                                 duration: _duration,
                                 child: Text(
                                   "My name is Tushandeep Singh and I'm $_age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
                                   style: const TextStyle(
-                                    fontSize: 24,
+                                    fontSize: 20,
                                     color: Colors.white,
                                   ),
                                 ),

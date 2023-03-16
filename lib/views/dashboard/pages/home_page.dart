@@ -103,88 +103,90 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: _size.height - kAppHeight,
+      width: double.maxFinite,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: <Widget>[
-          SizedBox(
-            width: _size.width * 0.5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                const Spacer(),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    MyNameWidget(
-                      theme: _theme,
-                      controller: _animationController,
-                    ),
-                    const SizedBox(height: 14),
-                    DescriptionWidget(
-                      controller: _animationController,
-                    ),
-                    const SizedBox(height: 30),
-                    ContactMeButton(
-                      controller: _animationController,
-                    ),
-                  ],
+                FittedBox(
+                  fit: BoxFit.cover,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      MyNameWidget(
+                        theme: _theme,
+                        controller: _animationController,
+                      ),
+                      const SizedBox(height: 14),
+                      DescriptionWidget(
+                        controller: _animationController,
+                      ),
+                      const SizedBox(height: 30),
+                      ContactMeButton(
+                        controller: _animationController,
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
               ],
             ),
           ),
-          SizedBox(
-            width: _size.width * 0.5,
-            child: Row(
+          Expanded(
+            child: Stack(
+              alignment: Alignment.centerLeft,
               children: [
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, _) {
-                    return Transform.translate(
-                      offset: _slideAnimation.value,
-                      child: AnimatedOpacity(
-                        opacity: _opacityAnimation.value,
-                        duration: _startDuration,
-                        child: AnimatedBuilder(
-                          animation: widget._controller,
-                          builder: (context, _) {
-                            return AnimatedOpacity(
-                              opacity: setOpacity,
-                              duration: _duration,
-                              child: Transform.scale(
-                                scale: setOpacity,
-                                child: Container(
-                                  height: 500,
-                                  width: 500,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(400),
-                                    child: Image.asset(
-                                      "assets/images/my_image.png",
-                                      fit: BoxFit.cover,
-                                      height: 460,
-                                      width: 460,
+                FittedBox(
+                  fit: BoxFit.cover,
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, _) {
+                      return Transform.translate(
+                        offset: _slideAnimation.value,
+                        child: AnimatedOpacity(
+                          opacity: _opacityAnimation.value,
+                          duration: _startDuration,
+                          child: AnimatedBuilder(
+                            animation: widget._controller,
+                            builder: (context, _) {
+                              return AnimatedOpacity(
+                                opacity: setOpacity,
+                                duration: _duration,
+                                child: Transform.scale(
+                                  scale: setOpacity,
+                                  child: Container(
+                                    height: 500,
+                                    width: 500,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(400),
+                                      child: Image.asset(
+                                        "assets/images/my_image.png",
+                                        fit: BoxFit.cover,
+                                        height: 460,
+                                        width: 460,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-                const Spacer(),
               ],
             ),
           ),
-          // const Spacer(flex: 2),
         ],
       ),
     );
@@ -416,8 +418,10 @@ class _MyNameTypingEffectState extends State<MyNameTypingEffect> {
 }
 
 class ContactMeButton extends StatefulWidget {
-  const ContactMeButton({super.key, required AnimationController controller})
-      : _controller = controller;
+  const ContactMeButton({
+    super.key,
+    required AnimationController controller,
+  }) : _controller = controller;
 
   final AnimationController _controller;
 
@@ -430,12 +434,16 @@ class _ContactMeButtonState extends State<ContactMeButton> {
 
   bool _onHover = false;
 
+  late DashBoardController _dashBoardController;
+
   late Animation<double> _opacityAnimation;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    _dashBoardController = Get.find<DashBoardController>();
 
     _opacityAnimation = Tween<double>(
       begin: 0,
@@ -488,7 +496,9 @@ class _ContactMeButtonState extends State<ContactMeButton> {
                 });
               },
               child: MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  _dashBoardController.factor(4);
+                },
                 splashColor: _theme.colorScheme.primary.withOpacity(0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

@@ -6,4 +6,6 @@ class DashBoardController extends GetxController {
   final RxDouble currPosOffset = 0.0.obs;
   final RxBool isScrolling = true.obs;
   final RxBool blinking = false.obs;
+
+  final RxBool showSocials = true.obs;
 }

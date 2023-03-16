@@ -30,11 +30,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     _controller = Get.find<DashBoardController>()
       ..maxScreenHeight(widget.size.height - kAppHeight);
 
+    _controller.currPosOffset.listen((value) {
+      if (value >= _controller.maxScreenHeight.value) {
+        _controller.showSocials(false);
+      } else if (value < _controller.maxScreenHeight.value / 2) {
+        _controller.showSocials(true);
+      }
+    });
+
     _controller.factor.listen(
       (f) async {
         _controller.isScrolling(false);
         _controller.currPosOffset(
-          _controller.maxScreenHeight * _controller.factor.value,
+          _controller.maxScreenHeight.value * _controller.factor.value,
         );
 
         _scrollController.animateTo(
@@ -103,33 +111,36 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     children: [
                       HomePage(controller: _scrollController),
                       AboutPage(controller: _scrollController),
-                      SkillsPage(controller: _scrollController),
+                      const SkillsPage(),
                       const ExperiencePage(),
                       const ContactPage(),
                     ],
                   ),
                 ),
-                Positioned(
-                  right: 60,
-                  bottom: 30,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          border: Border.all(
+                Obx(
+                  () => AnimatedPositioned(
+                    right: (_controller.showSocials.value) ? 60 : -60,
+                    bottom: 30,
+                    duration: const Duration(milliseconds: 700),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 80,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _theme.colorScheme.primary,
+                              width: 2,
+                            ),
                             color: _theme.colorScheme.primary,
-                            width: 2,
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          color: _theme.colorScheme.primary,
-                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ),
-                      ...List.generate(
-                        socials.length,
-                        (index) => buildSocialTile(socials[index]),
-                      ),
-                    ],
+                        ...List.generate(
+                          socials.length,
+                          (index) => buildSocialTile(socials[index]),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
