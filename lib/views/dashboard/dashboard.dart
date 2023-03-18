@@ -258,73 +258,75 @@ class _AppBarState extends State<_AppBar> {
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: PopupMenuButton<int>(
-                          onOpened: () => update(() {
-                            _isOpened = true;
-                          }),
-                          onCanceled: () => update(() {
-                            _isOpened = false;
-                          }),
-                          onSelected: (index) {
-                            widget._controller.factor(index);
-                            widget._controller.currPosOffset(
-                              widget._controller.maxScreenHeight.value *
-                                  widget._controller.factor.value,
-                            );
+                        child: Center(
+                          child: PopupMenuButton<int>(
+                            onOpened: () => update(() {
+                              _isOpened = true;
+                            }),
+                            onCanceled: () => update(() {
+                              _isOpened = false;
+                            }),
+                            onSelected: (index) {
+                              widget._controller.factor(index);
+                              widget._controller.currPosOffset(
+                                widget._controller.maxScreenHeight.value *
+                                    widget._controller.factor.value,
+                              );
 
-                            _isOpened = false;
-                            update(() {});
-                          },
-                          tooltip: "",
-                          color: Colors.black,
-                          offset: const Offset(-36, 40),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          icon: Icon(
-                            (_isOpened) ? Icons.close : Icons.menu,
-                            color: widget._theme.colorScheme.primary,
-                          ),
-                          itemBuilder: (context) => [
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 0,
-                                child: Text(
-                                  "Home",
-                                  style: _style,
-                                ),
-                              ),
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 1,
-                                child: Text(
-                                  "About",
-                                  style: _style,
-                                ),
-                              ),
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 2,
-                                child: Text(
-                                  "Skills",
-                                  style: _style,
-                                ),
-                              ),
-                            PopupMenuItem(
-                              value: 3,
-                              child: Text(
-                                "Experience",
-                                style: _style,
-                              ),
+                              _isOpened = false;
+                              update(() {});
+                            },
+                            tooltip: "",
+                            color: Colors.black,
+                            offset: const Offset(0, 44),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            PopupMenuItem(
-                              value: 4,
-                              child: Text(
-                                "Contact",
-                                style: _style,
-                              ),
+                            icon: Icon(
+                              (_isOpened) ? Icons.close : Icons.menu,
+                              color: widget._theme.colorScheme.primary,
                             ),
-                          ],
+                            itemBuilder: (context) => [
+                              if (constraints.maxWidth < kMobileWidth)
+                                PopupMenuItem(
+                                  value: 0,
+                                  child: Text(
+                                    "Home",
+                                    style: _style,
+                                  ),
+                                ),
+                              if (constraints.maxWidth < kMobileWidth)
+                                PopupMenuItem(
+                                  value: 1,
+                                  child: Text(
+                                    "About",
+                                    style: _style,
+                                  ),
+                                ),
+                              if (constraints.maxWidth < kMobileWidth)
+                                PopupMenuItem(
+                                  value: 2,
+                                  child: Text(
+                                    "Skills",
+                                    style: _style,
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 3,
+                                child: Text(
+                                  "Experience",
+                                  style: _style,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 4,
+                                child: Text(
+                                  "Contact",
+                                  style: _style,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
