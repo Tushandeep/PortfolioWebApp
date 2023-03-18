@@ -101,7 +101,7 @@ class _SkillsPageState extends State<SkillsPage> with TickerProviderStateMixin {
         ),
         const SkillTile(
           mainSkill: "General Skills",
-          offset: Offset(0, -200),
+          offset: Offset(0, -220),
           subSkills: [
             "Deep OOPS",
             "Debugging",
@@ -111,7 +111,7 @@ class _SkillsPageState extends State<SkillsPage> with TickerProviderStateMixin {
         ),
         const SkillTile(
           mainSkill: "Flutter",
-          offset: Offset(380, -140),
+          offset: Offset(300, -120),
           duration: 800,
           subSkills: [
             "Dart",
@@ -125,7 +125,7 @@ class _SkillsPageState extends State<SkillsPage> with TickerProviderStateMixin {
         ),
         const SkillTile(
           mainSkill: "Tools",
-          offset: Offset(-380, -140),
+          offset: Offset(-300, -120),
           duration: 1100,
           subSkills: [
             "Git",
@@ -137,7 +137,7 @@ class _SkillsPageState extends State<SkillsPage> with TickerProviderStateMixin {
         ),
         const SkillTile(
           mainSkill: "Databases",
-          offset: Offset(-300, 140),
+          offset: Offset(-240, 140),
           duration: 1400,
           subSkills: [
             "Realtime Database",
@@ -146,7 +146,7 @@ class _SkillsPageState extends State<SkillsPage> with TickerProviderStateMixin {
           ],
         ),
         const SkillTile(
-          offset: Offset(300, 140),
+          offset: Offset(240, 140),
           mainSkill: "Other",
           duration: 1700,
           subSkills: [

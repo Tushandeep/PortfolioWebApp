@@ -9,10 +9,10 @@ import './pages/pages.dart';
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({
     super.key,
-    required this.size,
-  });
+    required Size size,
+  }) : _size = size;
 
-  final Size size;
+  final Size _size;
 
   @override
   State<DashBoardScreen> createState() => _DashBoardScreenState();
@@ -28,7 +28,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     super.initState();
 
     _controller = Get.find<DashBoardController>()
-      ..maxScreenHeight(widget.size.height - kAppHeight);
+      ..maxScreenHeight(widget._size.height - kAppHeight);
 
     _controller.currPosOffset.listen((value) {
       if (value >= _controller.maxScreenHeight.value) {
@@ -136,7 +136,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           ),
                         ),
                         ...List.generate(
-                          socials.length,
+                          socials.length - 1,
                           (index) => buildSocialTile(socials[index]),
                         ),
                       ],

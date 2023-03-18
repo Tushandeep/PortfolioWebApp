@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,9 +20,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Size _size;
+  late DashBoardController _controller;
 
   void _initControllers() {
-    Get.put<DashBoardController>(DashBoardController());
+    _controller = Get.put<DashBoardController>(DashBoardController());
   }
 
   @override
@@ -28,6 +31,14 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _initControllers();
+
+    final size = window.physicalSize;
+    print("ASDASD");
+    print(size.height);
+    print(size.width);
+    print("QWQWEQWEQWE");
+    _controller.maxScreenHeight(size.height);
+    _controller.maxScreenWidth(size.width);
   }
 
   @override
@@ -49,6 +60,7 @@ class _MyAppState extends State<MyApp> {
           DashBoardScreen(size: _size),
         ],
       ),
+      // home: const TempScreen(),
     );
   }
 }

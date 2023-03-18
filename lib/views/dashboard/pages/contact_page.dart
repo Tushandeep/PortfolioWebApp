@@ -7,10 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../constants/constants.dart';
 import '../../../controllers/dashboard_controller.dart';
 
-const String mail = "tushansingh03@gmail.com";
-const String phone = "(+91) 7710164491";
-const String location = "Punjab, India";
-
 const Duration _startDuration = Duration(seconds: 1);
 
 class ContactPage extends StatefulWidget {
@@ -109,47 +105,108 @@ class _ContactPageState extends State<ContactPage>
             child: Row(
               children: [
                 Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Contact Me",
-                          style: TextStyle(
-                            fontSize: 50,
-                            color: _theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Contact Me",
+                              style: TextStyle(
+                                fontSize: 50,
+                                color: _theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            SizedBox(
+                              width: 180,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: List.generate(
+                                  2,
+                                  (index) => MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: socials[index].onPress,
+                                      child: Container(
+                                        height: 80,
+                                        width: 80,
+                                        padding: const EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black45,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: _theme.colorScheme.primary,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: socials[index].image,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: 180,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: List.generate(
+                                  2,
+                                  (index) => MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: socials[index + 2].onPress,
+                                      child: Container(
+                                        height: 80,
+                                        width: 80,
+                                        padding: const EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black45,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: _theme.colorScheme.primary,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: socials[index + 2].image,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            ContactTile(
+                              theme: _theme,
+                              icon: Icons.download_rounded,
+                              info: "Resume",
+                              onTap: downloadResume,
+                            ),
+                            const SizedBox(height: 20),
+                            ContactTile(
+                              theme: _theme,
+                              icon: Icons.phone_rounded,
+                              info: phone,
+                            ),
+                            const SizedBox(height: 20),
+                            ContactTile(
+                              theme: _theme,
+                              icon: Icons.location_pin,
+                              info: location,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 40),
-                        ContactTile(
-                          theme: _theme,
-                          icon: Icons.mail_outline_rounded,
-                          info: mail,
-                          onTap: mailMe,
-                        ),
-                        const SizedBox(height: 20),
-                        ContactTile(
-                          theme: _theme,
-                          icon: Icons.download_rounded,
-                          info: "Resume",
-                          onTap: downloadResume,
-                        ),
-                        const SizedBox(height: 20),
-                        ContactTile(
-                          theme: _theme,
-                          icon: Icons.phone_rounded,
-                          info: phone,
-                        ),
-                        const SizedBox(height: 20),
-                        ContactTile(
-                          theme: _theme,
-                          icon: Icons.location_pin,
-                          info: location,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -243,8 +300,8 @@ class _ContactTileState extends State<ContactTile> {
       child: GestureDetector(
         onTap: widget._onTap,
         child: Container(
-          width: 260,
-          height: 60,
+          width: 180,
+          height: 50,
           padding: const EdgeInsets.symmetric(
             vertical: 12,
             horizontal: 18,

@@ -1,7 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const double kAppHeight = 100;
+
+const String mail = "tushansingh03@gmail.com";
+const String phone = "(+91) 7710164491";
+const String location = "Punjab, India";
 
 class SocialMedia {
   final Widget image;
@@ -42,6 +47,20 @@ final List<SocialMedia> socials = <SocialMedia>[
 
       if (await canLaunchUrl(Uri.parse(iosUrl))) {
         await launchUrl(Uri.parse(iosUrl));
+      }
+    },
+  ),
+  SocialMedia(
+    image: const Icon(
+      CupertinoIcons.mail,
+      color: Colors.white,
+      size: 40,
+    ),
+    onPress: () async {
+      const String url = "mailto:$mail";
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       }
     },
   ),
