@@ -18,7 +18,7 @@ class _ContactPageState extends State<ContactPage> {
   late ThemeData _theme;
 
   void downloadResume() {
-    AnchorElement element = AnchorElement(href: "/assets/cv/cv.pdf");
+    AnchorElement element = AnchorElement(href: "/assets/images/cv.png");
     element.download = "Resume";
     element.click();
   }
