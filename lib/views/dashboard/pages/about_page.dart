@@ -1,18 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../../../controllers/dashboard_controller.dart';
 import '../../../constants/constants.dart';
-
-const Duration _duration = Duration(milliseconds: 550);
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
     super.key,
-    required ScrollController controller,
-  }) : _controller = controller;
-
-  final ScrollController _controller;
+  });
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -22,53 +17,11 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
   late Size _size;
   late ThemeData _theme;
 
-  late DashBoardController _dashBoardController;
-  late AnimationController _animationController;
-
-  late Animation<Offset> _slideAnimation;
-  late Animation<double> _opacityAnimation;
-
   late int _age;
-  late double _maxHeight, _start, _stop;
-  final double _height = 311;
-
-  bool _animating = true;
-
-  double get _offset =>
-      widget._controller.hasClients ? widget._controller.offset : 0;
 
   @override
   void initState() {
     super.initState();
-
-    _dashBoardController = Get.find<DashBoardController>();
-
-    _maxHeight = _dashBoardController.maxScreenHeight.value;
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: _duration,
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 20),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.ease,
-      ),
-    );
-
-    _opacityAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.ease,
-      ),
-    );
 
     final int year = DateTime.now().year - 2001;
     if (DateTime.now().month <= 10) {
@@ -80,58 +33,81 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
     } else {
       _age = year;
     }
-
-    _start = _maxHeight * _dashBoardController.factor.value;
-
-    _stop = _maxHeight * (_dashBoardController.factor.value + 1);
-
-    _dashBoardController.currPosOffset.listen((val) {
-      if (val >= (_maxHeight - 200) &&
-          !_animationController.isAnimating &&
-          _animating) {
-        _animationController.forward();
-        _animating = false;
-      }
-      // else if (val < _maxHeight) {
-      //   _animationControllerAboutMeLabel.reverse();
-      //   _animating = true;
-      // }
-    });
   }
 
-  double get setOpacity {
-    if (_offset < _start) {
-      return 0;
-    } else if (_offset > _stop) {
-      return 1;
-    }
-    return (_offset - _start) / (_stop - _start);
-  }
-
-  double get setOffset {
-    if (_offset < _start) {
-      return -1;
-    } else if (_offset > _stop) {
-      return 0;
-    }
-    return -1.0 + ((_offset - _start) / (_stop - _start));
-  }
-
-  // double get setContainerHeight {
-  //   if (_offset - 40 < _start) {
-  //     return 0;
-  //   } else if (_offset - 40 > _stop) {
-  //     return _height;
-  //   }
-  //   var containerHeight =
-  //       _height * ((_offset - 40 - _start) / (_stop - _start));
-  //   if (containerHeight >= 200) {
-  //     _animationControllerAboutMeValue.forward();
-  //   } else if (containerHeight < 200) {
-  //     _animationControllerAboutMeValue.reverse();
-  //   }
-  //   return containerHeight;
-  // }
+  List<Widget> _children() => <Widget>[
+        Expanded(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              FittedBox(
+                fit: BoxFit.cover,
+                child: Container(
+                  height: 500,
+                  width: 500,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(400),
+                    child: Image.asset(
+                      "assets/images/my_image.png",
+                      fit: BoxFit.cover,
+                      height: 460,
+                      width: 460,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 50,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "About Me",
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: _theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: _theme.colorScheme.primary,
+                        width: 3,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    "My name is Tushandeep Singh and I'm $_age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ];
 
   @override
   void didChangeDependencies() {
@@ -143,126 +119,17 @@ class _AboutPageState extends State<AboutPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: _size.height - kAppHeight,
+      height: max(kMinHeight, _size.height - kAppHeight),
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                FittedBox(
-                  fit: BoxFit.cover,
-                  child: AnimatedBuilder(
-                    animation: widget._controller,
-                    builder: (context, _) {
-                      return AnimatedOpacity(
-                        opacity: setOpacity,
-                        duration: _duration,
-                        child: Transform.scale(
-                          scale: setOpacity,
-                          child: Container(
-                            height: 500,
-                            width: 500,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(400),
-                              child: Image.asset(
-                                "assets/images/my_image.png",
-                                fit: BoxFit.cover,
-                                height: 460,
-                                width: 460,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 20,
-                right: 50,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, _) {
-                      return AnimatedOpacity(
-                        opacity: _opacityAnimation.value,
-                        duration: _duration,
-                        child: Transform.translate(
-                          offset: _slideAnimation.value,
-                          child: Text(
-                            "About Me",
-                            style: TextStyle(
-                              fontSize: 40,
-                              color: _theme.colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                  AnimatedBuilder(
-                    animation: widget._controller,
-                    builder: (context, _) {
-                      return AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, _) {
-                          return AnimatedOpacity(
-                            opacity: _opacityAnimation.value,
-                            duration: _duration,
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                left: 10,
-                                top: 10,
-                                bottom: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  left: BorderSide(
-                                    color: _theme.colorScheme.primary,
-                                    width: 3,
-                                  ),
-                                ),
-                              ),
-                              child: AnimatedOpacity(
-                                opacity: _opacityAnimation.value,
-                                duration: _duration,
-                                child: Text(
-                                  "My name is Tushandeep Singh and I'm $_age years old. I'm passionate about developing Hybrid Mobile Applications using Flutter SDK and Dart, looking for opportunities as a App Developer with a team of developers that can enrich my knowledge in Flutter & Dart. I love to solve problems using technology that improves user's life on a major scale. Over the last several years, I have been developing and leading various mobile apps in different areas. ",
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < kMobileWidth || constraints.maxWidth < 690) {
+          return Column(
+            children: [_children().last],
+          );
+        }
+        return Row(children: _children());
+      }),
     );
   }
 }

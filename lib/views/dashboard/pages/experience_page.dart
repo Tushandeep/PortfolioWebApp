@@ -1,13 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:get/get.dart';
+import 'dart:math';
 
-import '../../../controllers/dashboard_controller.dart';
+import 'package:flutter/material.dart';
+
 import '../../../constants/constants.dart';
 
 int i = 0;
-
-late AnimationController _controller;
 
 class ExperiencePage extends StatefulWidget {
   const ExperiencePage({super.key});
@@ -16,12 +13,9 @@ class ExperiencePage extends StatefulWidget {
   State<ExperiencePage> createState() => _ExperiencePageState();
 }
 
-class _ExperiencePageState extends State<ExperiencePage>
-    with SingleTickerProviderStateMixin {
+class _ExperiencePageState extends State<ExperiencePage> {
   late Size _size;
   late ThemeData _theme;
-
-  late DashBoardController _dashBoardController;
 
   final List<Widget> experiences = <Widget>[
     ExperienceTile(
@@ -43,25 +37,6 @@ class _ExperiencePageState extends State<ExperiencePage>
   ];
 
   @override
-  void initState() {
-    super.initState();
-
-    _dashBoardController = Get.find<DashBoardController>();
-
-    _controller = AnimationController(vsync: this);
-
-    final double maxHeight = _dashBoardController.maxScreenHeight.value * 3;
-
-    _dashBoardController.currPosOffset.listen(
-      (val) {
-        if (val >= maxHeight && !_controller.isAnimating) {
-          _controller.forward();
-        }
-      },
-    );
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -72,7 +47,7 @@ class _ExperiencePageState extends State<ExperiencePage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: _size.height - kAppHeight,
+      height: max(kMinHeight, _size.height - kAppHeight),
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -246,19 +221,9 @@ class _ExperienceTileState extends State<ExperienceTile> {
                     ),
                   ),
                 ),
-                // Expanded(
-                //   child: Text(
-                //     widget._description,
-                //     style: const TextStyle(
-                //       color: Colors.white54,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
-          ).animate(controller: _controller, autoPlay: false).fadeIn(
-                duration: Duration(milliseconds: 500 + widget._index * 500),
-              ),
+          ),
         ),
       ),
     );

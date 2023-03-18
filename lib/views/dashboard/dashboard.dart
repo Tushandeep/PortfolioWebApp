@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +25,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   late DashBoardController _controller;
   late ScrollController _scrollController;
 
+  static final Map<int, GlobalKey> _keys = {
+    0: GlobalKey(),
+    1: GlobalKey(),
+    2: GlobalKey(),
+    3: GlobalKey(),
+    4: GlobalKey(),
+  };
+
   @override
   void initState() {
     super.initState();
@@ -45,13 +55,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           _controller.maxScreenHeight.value * _controller.factor.value,
         );
 
-        _scrollController.animateTo(
-          _controller.currPosOffset.value,
-          duration: const Duration(seconds: 1),
-          curve: Curves.ease,
-        );
+        final BuildContext pageContext =
+            _keys[_controller.factor.value]!.currentContext!;
 
-        await Future.delayed(const Duration(milliseconds: 1100));
+        await Scrollable.ensureVisible(
+          pageContext,
+          alignment: 0.1,
+          duration: const Duration(seconds: 1),
+        );
 
         _controller.isScrolling(true);
       },
@@ -86,6 +97,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       );
   }
 
+  final List<Widget> sections = <Widget>[
+    HomePage(key: _keys[0]),
+    AboutPage(key: _keys[1]),
+    SkillsPage(key: _keys[2]),
+    ExperiencePage(key: _keys[3]),
+    ContactPage(key: _keys[4]),
+  ];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -96,57 +115,48 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          _AppBar(
-            controller: _controller,
-            theme: _theme,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      HomePage(controller: _scrollController),
-                      AboutPage(controller: _scrollController),
-                      const SkillsPage(),
-                      const ExperiencePage(),
-                      const ContactPage(),
-                    ],
-                  ),
-                ),
-                Obx(
-                  () => AnimatedPositioned(
-                    right: (_controller.showSocials.value) ? 60 : -60,
-                    bottom: 30,
-                    duration: const Duration(milliseconds: 700),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 80,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _theme.colorScheme.primary,
-                              width: 2,
-                            ),
-                            color: _theme.colorScheme.primary,
-                            borderRadius: BorderRadius.circular(20),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          _controller.maxScreenHeight(
+            max(kMinHeight, constraints.maxHeight - kAppHeight),
+          );
+          return Column(
+            children: [
+              _AppBar(
+                controller: _controller,
+                theme: _theme,
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: List.generate(
+                          sections.length,
+                          (index) => sections[index],
+                        ),
+                      ),
+                    ),
+                    Obx(
+                      () => AnimatedPositioned(
+                        right: (_controller.showSocials.value) ? 30 : -60,
+                        bottom: 30,
+                        duration: const Duration(milliseconds: 700),
+                        child: Column(
+                          children: List.generate(
+                            socials.length - 1,
+                            (index) => buildSocialTile(socials[index]),
                           ),
                         ),
-                        ...List.generate(
-                          socials.length - 1,
-                          (index) => buildSocialTile(socials[index]),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -179,7 +189,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   }
 }
 
-class _AppBar extends StatelessWidget {
+class _AppBar extends StatefulWidget {
   const _AppBar({
     required DashBoardController controller,
     required ThemeData theme,
@@ -190,35 +200,139 @@ class _AppBar extends StatelessWidget {
   final ThemeData _theme;
 
   @override
+  State<_AppBar> createState() => _AppBarState();
+}
+
+class _AppBarState extends State<_AppBar> {
+  bool _isOpened = false;
+
+  TextStyle get _style => TextStyle(
+        color: widget._theme.colorScheme.primary,
+        fontWeight: FontWeight.w600,
+      );
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: kAppHeight,
-      child: Stack(
-        alignment: Alignment.centerLeft,
-        children: [
-          AnimatedPositioned(
-            left: 30,
-            duration: const Duration(milliseconds: 400),
-            child: SizedBox(
-              height: 130,
-              width: 130,
-              child: Image.asset(
-                "assets/images/tushan_logo_c.png",
-                fit: BoxFit.cover,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            alignment: Alignment.centerLeft,
+            clipBehavior: Clip.antiAlias,
+            children: [
+              AnimatedPositioned(
+                left: (constraints.maxWidth < kMobileWidth) ? 10 : 30,
+                duration: const Duration(milliseconds: 400),
+                child: SizedBox(
+                  height: 130,
+                  width: 130,
+                  child: Image.asset(
+                    "assets/images/tushan_logo_c.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(
-              navItems.length,
-              (index) => buildNavTile(
-                navItems[index],
-              ),
-            ),
-          ),
-        ],
+              if (constraints.maxWidth >= kMobileWidth)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: List.generate(
+                    (constraints.maxWidth < 800)
+                        ? navItems.length - 2
+                        : navItems.length,
+                    (index) => buildNavTile(
+                      navItems[index],
+                    ),
+                  ),
+                ),
+              if (constraints.maxWidth < 800)
+                Positioned(
+                  right: 20,
+                  child: StatefulBuilder(
+                    builder: (context, update) {
+                      return Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: PopupMenuButton<int>(
+                          onOpened: () => update(() {
+                            _isOpened = true;
+                          }),
+                          onCanceled: () => update(() {
+                            _isOpened = false;
+                          }),
+                          onSelected: (index) {
+                            widget._controller.factor(index);
+                            widget._controller.currPosOffset(
+                              widget._controller.maxScreenHeight.value *
+                                  widget._controller.factor.value,
+                            );
+
+                            _isOpened = false;
+                            update(() {});
+                          },
+                          tooltip: "",
+                          color: Colors.black,
+                          offset: const Offset(-36, 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          icon: Icon(
+                            (_isOpened) ? Icons.close : Icons.menu,
+                            color: widget._theme.colorScheme.primary,
+                          ),
+                          itemBuilder: (context) => [
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 0,
+                                child: Text(
+                                  "Home",
+                                  style: _style,
+                                ),
+                              ),
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  "About",
+                                  style: _style,
+                                ),
+                              ),
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  "Skills",
+                                  style: _style,
+                                ),
+                              ),
+                            PopupMenuItem(
+                              value: 3,
+                              child: Text(
+                                "Experience",
+                                style: _style,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 4,
+                              child: Text(
+                                "Contact",
+                                style: _style,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -228,9 +342,10 @@ class _AppBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () {
-          _controller.factor(item.value);
-          _controller.currPosOffset(
-            _controller.maxScreenHeight.value * _controller.factor.value,
+          widget._controller.factor(item.value);
+          widget._controller.currPosOffset(
+            widget._controller.maxScreenHeight.value *
+                widget._controller.factor.value,
           );
           item.onPress;
         },
@@ -247,8 +362,8 @@ class _AppBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: (_controller.factor.value == item.value)
-                              ? _theme.colorScheme.primary
+                          color: (widget._controller.factor.value == item.value)
+                              ? widget._theme.colorScheme.primary
                               : Colors.transparent,
                           width: 2,
                         ),
@@ -258,11 +373,12 @@ class _AppBar extends StatelessWidget {
                       item.label,
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: (_controller.factor.value == item.value)
-                            ? FontWeight.bold
-                            : null,
-                        color: (_controller.factor.value == item.value)
-                            ? _theme.colorScheme.primary
+                        fontWeight:
+                            (widget._controller.factor.value == item.value)
+                                ? FontWeight.bold
+                                : null,
+                        color: (widget._controller.factor.value == item.value)
+                            ? widget._theme.colorScheme.primary
                             : Colors.grey,
                       ),
                     ),

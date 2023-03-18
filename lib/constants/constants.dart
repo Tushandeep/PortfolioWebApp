@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const double kAppHeight = 100;
+const double kMinHeight = 600;
+
+const double kMobileWidth = 600;
 
 const String mail = "tushansingh03@gmail.com";
 const String phone = "(+91) 7710164491";
@@ -54,7 +57,7 @@ final List<SocialMedia> socials = <SocialMedia>[
     image: const Icon(
       CupertinoIcons.mail,
       color: Colors.white,
-      size: 40,
+      size: 34,
     ),
     onPress: () async {
       const String url = "mailto:$mail";
