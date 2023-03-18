@@ -123,13 +123,13 @@ class _ContactPageState extends State<ContactPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    ContactTile(
-                      theme: _theme,
-                      icon: Icons.download_rounded,
-                      info: "Resume",
-                      onTap: downloadResume,
-                    ),
+                    // const SizedBox(height: 20),
+                    // ContactTile(
+                    //   theme: _theme,
+                    //   icon: Icons.download_rounded,
+                    //   info: "Resume",
+                    //   onTap: downloadResume,
+                    // ),
                     const SizedBox(height: 20),
                     ContactTile(
                       theme: _theme,
