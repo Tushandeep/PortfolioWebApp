@@ -48,6 +48,9 @@ class _ContactPageState extends State<ContactPage> {
               SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: (isMobile)
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.end,
                   children: <Widget>[
                     FittedBox(
                       fit: BoxFit.cover,
