@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:portfolio/controllers/dashboard_controller.dart';
 
 import '../../../constants/constants.dart';
 
@@ -17,6 +19,7 @@ class _SkillsPageState extends State<SkillsPage> {
 
   final List<Widget> _childrens = <Widget>[
     const SkillTile(
+      index: 0,
       mainSkill: "General Skills",
       subSkills: [
         "Deep OOPS",
@@ -26,6 +29,7 @@ class _SkillsPageState extends State<SkillsPage> {
       ],
     ),
     const SkillTile(
+      index: 1,
       mainSkill: "Flutter",
       subSkills: [
         "Dart",
@@ -38,6 +42,7 @@ class _SkillsPageState extends State<SkillsPage> {
       ],
     ),
     const SkillTile(
+      index: 2,
       mainSkill: "Tools",
       subSkills: [
         "Git",
@@ -48,6 +53,7 @@ class _SkillsPageState extends State<SkillsPage> {
       ],
     ),
     const SkillTile(
+      index: 3,
       mainSkill: "Databases",
       subSkills: [
         "Realtime Database",
@@ -56,6 +62,7 @@ class _SkillsPageState extends State<SkillsPage> {
       ],
     ),
     const SkillTile(
+      index: 4,
       mainSkill: "Other",
       subSkills: [
         "JSON",
@@ -128,11 +135,14 @@ class SkillsLabelWidget extends StatelessWidget {
 class SkillTile extends StatefulWidget {
   const SkillTile({
     super.key,
+    required int index,
     required String mainSkill,
     required List<String> subSkills,
-  })  : _mainSkill = mainSkill,
+  })  : _index = index,
+        _mainSkill = mainSkill,
         _subSkills = subSkills;
 
+  final int _index;
   final List<String> _subSkills;
   final String _mainSkill;
 
@@ -141,9 +151,17 @@ class SkillTile extends StatefulWidget {
 }
 
 class _SkillTileState extends State<SkillTile> {
-  bool isExpanded = false;
+  // bool isExpanded = false;
 
   late ThemeData _theme;
+  late DashBoardController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = Get.find<DashBoardController>();
+  }
 
   @override
   void didChangeDependencies() {
@@ -164,25 +182,33 @@ class _SkillTileState extends State<SkillTile> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ExpansionPanelList(
-            elevation: 0,
-            animationDuration: const Duration(seconds: 1),
-            expandIconColor: Colors.red,
-            expansionCallback: (_, isOpen) {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
-            },
-            children: [
-              _buildExpansionTile(
-                isExpanded,
-                _theme,
-                widget._mainSkill,
-                widget._subSkills,
-              ),
-            ],
+        child: Obx(
+          () => ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ExpansionPanelList(
+              elevation: 0,
+              animationDuration: const Duration(seconds: 1),
+              expandIconColor: Colors.red,
+              expansionCallback: (_, isOpen) {
+                // setState(() {
+                // isExpanded = !isExpanded;
+                // });
+                if (isOpen) {
+                  _controller.skillsContainerExpand[widget._index] = false;
+                } else {
+                  _controller.skillsContainerExpand(List.filled(5, false));
+                  _controller.skillsContainerExpand[widget._index] = true;
+                }
+              },
+              children: [
+                _buildExpansionTile(
+                  _controller.skillsContainerExpand[widget._index],
+                  _theme,
+                  widget._mainSkill,
+                  widget._subSkills,
+                ),
+              ],
+            ),
           ),
         ),
       ),

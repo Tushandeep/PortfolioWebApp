@@ -228,12 +228,6 @@ class _ExperienceTileState extends State<ExperienceTile> {
     );
   }
 
-  /*
-  
-  width: (constraints.maxWidth < kMobileWidth) ? null : 400,
-  
-  */
-
   Future<dynamic> viewExperienceTile() {
     return showDialog(
       context: context,
@@ -340,38 +334,24 @@ class _ExperienceTileState extends State<ExperienceTile> {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          GestureDetector(
-            onTap: () {
+          TextButton.icon(
+            onPressed: () {
               Navigator.pop(context);
             },
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 14,
-                ),
-                decoration: BoxDecoration(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
-                  color: _theme.colorScheme.primary,
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.close, color: Colors.white),
-                    SizedBox(width: 4),
-                    Text(
-                      "Close",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
                 ),
               ),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              backgroundColor: MaterialStateProperty.all(
+                _theme.colorScheme.primary,
+              ),
             ),
-          )
+            icon: const Icon(Icons.close),
+            label: const Text("Close"),
+          ),
         ],
       ),
     );

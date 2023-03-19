@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 
 import '../../constants/constants.dart';
@@ -203,7 +204,7 @@ class _AppBar extends StatefulWidget {
   State<_AppBar> createState() => _AppBarState();
 }
 
-class _AppBarState extends State<_AppBar> {
+class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
   bool _isOpened = false;
 
   TextStyle get _style => TextStyle(
@@ -233,6 +234,29 @@ class _AppBarState extends State<_AppBar> {
                   ),
                 ),
               ),
+              Obx(
+                () {
+                  if (widget._controller.factor.value > 0 &&
+                      constraints.maxWidth < kMobileWidth) {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Tushandeep Singh",
+                        style: TextStyle(
+                          color: widget._theme.colorScheme.primary,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ).animate(autoPlay: true).fade(
+                          begin: 0,
+                          end: 1,
+                          duration: const Duration(seconds: 1),
+                        );
+                  }
+                  return const Center();
+                },
+              ),
               if (constraints.maxWidth >= kMobileWidth)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -252,81 +276,78 @@ class _AppBarState extends State<_AppBar> {
                   child: StatefulBuilder(
                     builder: (context, update) {
                       return Container(
-                        height: 40,
-                        width: 40,
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Center(
-                          child: PopupMenuButton<int>(
-                            onOpened: () => update(() {
-                              _isOpened = true;
-                            }),
-                            onCanceled: () => update(() {
-                              _isOpened = false;
-                            }),
-                            onSelected: (index) {
-                              widget._controller.factor(index);
-                              widget._controller.currPosOffset(
-                                widget._controller.maxScreenHeight.value *
-                                    widget._controller.factor.value,
-                              );
+                        child: PopupMenuButton<int>(
+                          onOpened: () => update(() {
+                            _isOpened = true;
+                          }),
+                          onCanceled: () => update(() {
+                            _isOpened = false;
+                          }),
+                          onSelected: (index) {
+                            widget._controller.factor(index);
+                            widget._controller.currPosOffset(
+                              widget._controller.maxScreenHeight.value *
+                                  widget._controller.factor.value,
+                            );
 
-                              _isOpened = false;
-                              update(() {});
-                            },
-                            tooltip: "",
-                            color: Colors.black,
-                            offset: const Offset(0, 44),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            icon: Icon(
-                              (_isOpened) ? Icons.close : Icons.menu,
-                              color: widget._theme.colorScheme.primary,
-                            ),
-                            itemBuilder: (context) => [
-                              if (constraints.maxWidth < kMobileWidth)
-                                PopupMenuItem(
-                                  value: 0,
-                                  child: Text(
-                                    "Home",
-                                    style: _style,
-                                  ),
-                                ),
-                              if (constraints.maxWidth < kMobileWidth)
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: Text(
-                                    "About",
-                                    style: _style,
-                                  ),
-                                ),
-                              if (constraints.maxWidth < kMobileWidth)
-                                PopupMenuItem(
-                                  value: 2,
-                                  child: Text(
-                                    "Skills",
-                                    style: _style,
-                                  ),
-                                ),
-                              PopupMenuItem(
-                                value: 3,
-                                child: Text(
-                                  "Experience",
-                                  style: _style,
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 4,
-                                child: Text(
-                                  "Contact",
-                                  style: _style,
-                                ),
-                              ),
-                            ],
+                            _isOpened = false;
+                            update(() {});
+                          },
+                          tooltip: "",
+                          color: Colors.black,
+                          offset: const Offset(0, 44),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
+                          icon: Icon(
+                            (_isOpened) ? Icons.close : Icons.menu,
+                            color: widget._theme.colorScheme.primary,
+                          ),
+                          itemBuilder: (context) => [
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 0,
+                                child: Text(
+                                  "Home",
+                                  style: _style,
+                                ),
+                              ),
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  "About",
+                                  style: _style,
+                                ),
+                              ),
+                            if (constraints.maxWidth < kMobileWidth)
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  "Skills",
+                                  style: _style,
+                                ),
+                              ),
+                            PopupMenuItem(
+                              value: 3,
+                              child: Text(
+                                "Experience",
+                                style: _style,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 4,
+                              child: Text(
+                                "Contact",
+                                style: _style,
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },

@@ -9,4 +9,7 @@ class DashBoardController extends GetxController {
   final RxBool blinking = false.obs;
 
   final RxBool showSocials = true.obs;
+
+  final RxList<bool> skillsContainerExpand =
+      List.generate(5, (index) => false).obs;
 }
