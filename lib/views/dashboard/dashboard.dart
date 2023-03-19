@@ -225,9 +225,10 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
               AnimatedPositioned(
                 left: (constraints.maxWidth < kMobileWidth) ? 10 : 30,
                 duration: const Duration(milliseconds: 400),
-                child: SizedBox(
-                  height: 130,
-                  width: 130,
+                child: AnimatedContainer(
+                  height: (constraints.maxWidth < kMobileWidth) ? 90 : 130,
+                  width: (constraints.maxWidth < kMobileWidth) ? 90 : 130,
+                  duration: const Duration(milliseconds: 500),
                   child: Image.asset(
                     "assets/images/tushan_logo_c.png",
                     fit: BoxFit.cover,
@@ -257,6 +258,8 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
                   return const Center();
                 },
               ),
+
+              // Nav Bar in Desktop View...
               if (constraints.maxWidth >= kMobileWidth)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -270,85 +273,83 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
                     ),
                   ),
                 ),
+
+              // Menu Icon for Mobile View...
               if (constraints.maxWidth < 800)
                 Positioned(
                   right: 20,
                   child: StatefulBuilder(
                     builder: (context, update) {
-                      return Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
+                      return PopupMenuButton<int>(
+                        onOpened: () => update(() {
+                          _isOpened = true;
+                        }),
+                        onCanceled: () => update(() {
+                          _isOpened = false;
+                        }),
+                        onSelected: (index) {
+                          widget._controller.factor(index);
+                          widget._controller.currPosOffset(
+                            widget._controller.maxScreenHeight.value *
+                                widget._controller.factor.value,
+                          );
+
+                          _isOpened = false;
+                          update(() {});
+                        },
+                        tooltip: "",
+                        padding: const EdgeInsets.all(8),
+                        color: Colors.black,
+                        offset: const Offset(0, 44),
+                        splashRadius: 1,
+                        iconSize: 32,
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: PopupMenuButton<int>(
-                          onOpened: () => update(() {
-                            _isOpened = true;
-                          }),
-                          onCanceled: () => update(() {
-                            _isOpened = false;
-                          }),
-                          onSelected: (index) {
-                            widget._controller.factor(index);
-                            widget._controller.currPosOffset(
-                              widget._controller.maxScreenHeight.value *
-                                  widget._controller.factor.value,
-                            );
-
-                            _isOpened = false;
-                            update(() {});
-                          },
-                          tooltip: "",
-                          color: Colors.black,
-                          offset: const Offset(0, 44),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          icon: Icon(
-                            (_isOpened) ? Icons.close : Icons.menu,
-                            color: widget._theme.colorScheme.primary,
-                          ),
-                          itemBuilder: (context) => [
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 0,
-                                child: Text(
-                                  "Home",
-                                  style: _style,
-                                ),
-                              ),
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 1,
-                                child: Text(
-                                  "About",
-                                  style: _style,
-                                ),
-                              ),
-                            if (constraints.maxWidth < kMobileWidth)
-                              PopupMenuItem(
-                                value: 2,
-                                child: Text(
-                                  "Skills",
-                                  style: _style,
-                                ),
-                              ),
-                            PopupMenuItem(
-                              value: 3,
-                              child: Text(
-                                "Experience",
-                                style: _style,
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 4,
-                              child: Text(
-                                "Contact",
-                                style: _style,
-                              ),
-                            ),
-                          ],
+                        icon: Icon(
+                          (_isOpened) ? Icons.close : Icons.menu,
+                          color: widget._theme.colorScheme.primary,
                         ),
+                        itemBuilder: (context) => [
+                          if (constraints.maxWidth < kMobileWidth)
+                            PopupMenuItem(
+                              value: 0,
+                              child: Text(
+                                "Home",
+                                style: _style,
+                              ),
+                            ),
+                          if (constraints.maxWidth < kMobileWidth)
+                            PopupMenuItem(
+                              value: 1,
+                              child: Text(
+                                "About",
+                                style: _style,
+                              ),
+                            ),
+                          if (constraints.maxWidth < kMobileWidth)
+                            PopupMenuItem(
+                              value: 2,
+                              child: Text(
+                                "Skills",
+                                style: _style,
+                              ),
+                            ),
+                          PopupMenuItem(
+                            value: 3,
+                            child: Text(
+                              "Experience",
+                              style: _style,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 4,
+                            child: Text(
+                              "Contact",
+                              style: _style,
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
