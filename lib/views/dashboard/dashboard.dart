@@ -223,7 +223,7 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
             clipBehavior: Clip.antiAlias,
             children: [
               AnimatedPositioned(
-                left: (constraints.maxWidth < kMobileWidth) ? 10 : 30,
+                left: (constraints.maxWidth < kMobileWidth) ? 5 : 30,
                 duration: const Duration(milliseconds: 400),
                 child: AnimatedContainer(
                   height: (constraints.maxWidth < kMobileWidth) ? 90 : 130,
@@ -245,7 +245,7 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
                         "Tushandeep Singh",
                         style: TextStyle(
                           color: widget._theme.colorScheme.primary,
-                          fontSize: 26,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

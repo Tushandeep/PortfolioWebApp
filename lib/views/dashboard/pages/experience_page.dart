@@ -334,7 +334,7 @@ class _ExperienceTileState extends State<ExperienceTile> {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          TextButton.icon(
+          TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
@@ -348,9 +348,9 @@ class _ExperienceTileState extends State<ExperienceTile> {
               backgroundColor: MaterialStateProperty.all(
                 _theme.colorScheme.primary,
               ),
+              alignment: Alignment.center,
             ),
-            icon: const Icon(Icons.close),
-            label: const Text("Close"),
+            child: const Text("Close"),
           ),
         ],
       ),
