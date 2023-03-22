@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const double kAppHeight = 100;
+const double kAppHeight = 110;
 const double kMinHeight = 600;
 
 const double kMobileWidth = 600;

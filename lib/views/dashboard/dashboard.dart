@@ -116,6 +116,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _theme.scaffoldBackgroundColor,
       body: LayoutBuilder(
         builder: (context, constraints) {
           _controller.maxScreenHeight(
@@ -223,6 +224,7 @@ class _AppBarState extends State<_AppBar> with SingleTickerProviderStateMixin {
             clipBehavior: Clip.antiAlias,
             children: [
               AnimatedPositioned(
+                top: (constraints.maxWidth < kMobileWidth) ? 5 : 0,
                 left: (constraints.maxWidth < kMobileWidth) ? 5 : 30,
                 duration: const Duration(milliseconds: 400),
                 child: AnimatedContainer(
