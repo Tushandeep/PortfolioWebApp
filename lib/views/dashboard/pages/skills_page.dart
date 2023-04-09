@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:portfolio/controllers/dashboard_controller.dart';
 
+import '../../../controllers/dashboard_controller.dart';
 import '../../../constants/constants.dart';
 
 class SkillsPage extends StatefulWidget {
