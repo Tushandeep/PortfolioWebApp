@@ -5,8 +5,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 
 import '../../constants/constants.dart';
-import '../../controllers/dashboard_controller.dart';
+
 import '../../models/nav_item_model.dart';
+import '../controllers/dashboard_controller.dart';
 import './pages/pages.dart';
 
 class DashBoardScreen extends StatefulWidget {

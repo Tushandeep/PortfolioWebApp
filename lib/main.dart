@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import './constants/theme.dart';
-import './views/dashboard/dashboard.dart';
-import './controllers/dashboard_controller.dart';
+import 'v1/controllers/dashboard_controller.dart';
+import 'v1/dashboard/dashboard.dart';
 
 void main() {
   runApp(const MyApp());

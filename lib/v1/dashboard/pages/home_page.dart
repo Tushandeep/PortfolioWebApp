@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../constants/constants.dart';
-import '../../../controllers/dashboard_controller.dart';
+import '../../controllers/dashboard_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
